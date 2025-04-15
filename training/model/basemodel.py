@@ -1,36 +1,45 @@
 import tensorflow as tf
-
 from training.model.fcn import FCN
-#from training.model.unet import Unet
 from training.weights.load_weights import load_vgg_weights
 
 class BaseModel:
-    def __init__ (self, num_classes: int, input_shape= None, model_name= 'fcn'):
+    def __init__(self, num_classes: int, input_shape=None, model_name='fcn'):
         self.model_name = model_name
-        self.model = None
-        self._make_model = False
-        
         self.input_shape = input_shape
         self.num_classes = num_classes
+        self.model = None
+        self._make_model = False
 
     def make_model(self):
         if self.model_name == 'fcn':
-            self.model = FCN(num_output_channels= self.num_classes)
-            self.model.build(input_shape= self.input_shape)
+            self.model = FCN(num_output_channels=self.num_classes)
+            self.model.build(input_shape=self.input_shape)
             self._make_model = True
-        elif self.model_name == "unet":
-            #self.model = Unet()
-            self.model.build(input_shape= self.input_shape)
 
-    
     def summary(self):
         self.model.summary()
-    
+
     def load_weights(self, weights_path):
         if self.model_name == 'fcn':
             weights = load_vgg_weights(weights_path)
             for layer in self.model.layers[:5]:
-                layer.set_weights(weights[layer.name])
+                if layer.name in weights:
+                    layer.set_weights(weights[layer.name])
+
+    def compile(self, **kwargs):
+        self.model.compile(**kwargs)
+
+    def fit(self, **kwargs):
+        return self.model.fit(**kwargs)
+
+    def predict(self, image):
+        return self.model.predict(image)
+
+    def save(self, filepath, **kwargs):
+        self.model.save(filepath=filepath, **kwargs)
+
+    def __call__(self, inputs):
+        return self.model(inputs)
                 
     ### Compile
     def compile(self,
