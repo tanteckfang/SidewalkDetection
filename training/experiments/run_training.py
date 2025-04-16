@@ -47,7 +47,7 @@ model.summary()
 
 metrics_to_print = collections.OrderedDict([
     ("loss", "loss"), ("val_loss", "val_loss"),
-    ("accuracy", "accuracy"), ("val_acc", "val_acc")
+    ("accuracy", "accuracy"), ("val_accuracy", "val_accuracy")
 ])
 
 callbacks = [
