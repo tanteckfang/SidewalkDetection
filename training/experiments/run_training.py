@@ -63,3 +63,31 @@ os.makedirs("training/experiments/logs/weights", exist_ok=True)
 
 model.model.save("training/experiments/logs/weights/sidewalk-detect.keras")
 
+# Plot training metrics directly
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(model_history.history['loss'], label='Train Loss')
+plt.plot(model_history.history['val_loss'], label='Val Loss')
+plt.title('Loss Over Epochs')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+
+plt.subplot(1, 2, 2)
+plt.plot(model_history.history['accuracy'], label='Train Accuracy')
+if 'val_accuracy' in model_history.history:
+    plt.plot(model_history.history['val_accuracy'], label='Val Accuracy')
+elif 'val_acc' in model_history.history:
+    plt.plot(model_history.history['val_acc'], label='Val Accuracy')
+plt.title('Accuracy Over Epochs')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
+
+
