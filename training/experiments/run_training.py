@@ -59,5 +59,7 @@ callbacks = [
 model.model.compile(optimizer='adam', loss=SegmentationLoss(), metrics=["accuracy"])
 model_history = model.model.fit(train_dataset, epochs=num_epochs, callbacks=callbacks, validation_data=val_dataset, verbose=1)
 
+os.makedirs("training/experiments/logs/weights", exist_ok=True)
+
 model.model.save("training/experiments/logs/weights/sidewalk-detect.keras")
 
