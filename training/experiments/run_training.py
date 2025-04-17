@@ -3,6 +3,7 @@ import sys
 import argparse
 import collections
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
