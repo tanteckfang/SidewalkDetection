@@ -39,8 +39,19 @@ num_epochs = 10
 batch_size = 12
 num_classes = 1
 
-train_dataset = SegmentationDataset(image_dir=train_dir + "/image", label_dir=train_dir + "/label", batch_size=batch_size, resize=(224, 224))
-val_dataset = SegmentationDataset(image_dir=val_image_dir, label_dir=val_label_dir, batch_size=20, resize=(224, 224))
+# Handle flat directory structure (images and masks in same folder)
+train_dataset = SegmentationDataset(
+    image_dir=train_dir,
+    label_dir=train_dir,
+    batch_size=batch_size,
+    resize=(224, 224)
+)
+val_dataset = SegmentationDataset(
+    image_dir=val_image_dir,
+    label_dir=val_label_dir,
+    batch_size=20,
+    resize=(224, 224)
+)
 
 model = BaseModel(num_classes, (None, 224, 224, 3))
 model.make_model()
@@ -48,7 +59,7 @@ model.summary()
 
 metrics_to_print = collections.OrderedDict([
     ("loss", "loss"), ("val_loss", "val_loss"),
-    ("accuracy", "accuracy"), ("val_accuracy", "val_accuracy")
+    ("accuracy", "accuracy"), ("val_acc", "val_acc")
 ])
 
 callbacks = [
@@ -60,11 +71,11 @@ callbacks = [
 model.model.compile(optimizer='adam', loss=SegmentationLoss(), metrics=["accuracy"])
 model_history = model.model.fit(train_dataset, epochs=num_epochs, callbacks=callbacks, validation_data=val_dataset, verbose=1)
 
+# Save final model
 os.makedirs("training/experiments/logs/weights", exist_ok=True)
-
 model.model.save("training/experiments/logs/weights/sidewalk-detect.keras")
 
-# Plot training metrics directly
+# Plot training metrics in Colab
 plt.figure(figsize=(12, 5))
 
 plt.subplot(1, 2, 1)
@@ -90,5 +101,6 @@ plt.grid(True)
 
 plt.tight_layout()
 plt.show()
+
 
 
