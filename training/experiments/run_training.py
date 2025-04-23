@@ -23,9 +23,21 @@ args = parser.parse_args()
 
 if args.use_small_train:
     train_dir = os.path.join(args.train_dir + "_500")
+    train_image_dir = os.path.join(train_dir, "image")
+    train_label_dir = os.path.join(train_dir, "label")
+    if not os.path.exists(train_image_dir) or not os.path.exists(train_label_dir):
+        # If image and label subfolders don't exist, use flat structure
+        train_image_dir = train_dir
+        train_label_dir = train_dir
     print("✅ Using only 500 small training set!")
 else:
     train_dir = args.train_dir
+    train_image_dir = os.path.join(train_dir, "image")
+    train_label_dir = os.path.join(train_dir, "label")
+    if not os.path.exists(train_image_dir) or not os.path.exists(train_label_dir):
+        # Fallback for flat structure
+        train_image_dir = train_dir
+        train_label_dir = train_dir
 
 val_image_dir = args.val_image_dir
 val_label_dir = args.val_label_dir
@@ -39,10 +51,10 @@ num_epochs = 10
 batch_size = 12
 num_classes = 1
 
-# Handle flat directory structure (images and masks in same folder)
+# Handle directory structure
 train_dataset = SegmentationDataset(
-    image_dir=train_dir,
-    label_dir=train_dir,
+    image_dir=train_image_dir,
+    label_dir=train_label_dir,
     batch_size=batch_size,
     resize=(224, 224)
 )
